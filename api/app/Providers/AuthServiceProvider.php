@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\User;
+use \Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,8 +31,26 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+            $authHeader = $request->header('authorization');
+            if ($authHeader) {
+                list($jwt) = sscanf( $authHeader, 'Bearer %s');
+                if ($jwt) {
+                    try {
+                        /** @var $secretKey key used to encode the jwt token*/
+                        $secretKey = base64_decode(env('APP_KEY'));
+                        $token = JWT::decode($jwt, $secretKey, array('HS256'));
+                        $method = strtolower($request->method());
+                        //token data contains request method permission
+                        //check if current request method is allowed for user
+                        if($token->data->$method)
+                            return true;
+                    } catch (\Exception $e) {
+                        /*
+                         * the token was not able to be decoded.
+                         * this is likely because the signature was not able to be verified (tampered token)
+                         */
+                    }
+                }
             }
         });
     }

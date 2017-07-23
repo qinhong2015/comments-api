@@ -14,3 +14,8 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+$app->get('comments', ['middleware' => 'auth', 'uses' => 'CommentsController@getAll']);
+$app->get('comments/{id}', [ 'uses' => 'CommentsController@get']);
+$app->post('comments', ['middleware' => 'auth', 'uses' => 'CommentsController@create']);
+$app->put('comments/{id}', ['middleware' => 'auth', 'uses' => 'CommentsController@update']);
+$app->delete('comments/{id}', ['middleware' => 'auth', 'uses' => 'CommentsController@delete']);
