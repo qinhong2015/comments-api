@@ -80,6 +80,8 @@ $token = JWT::decode($jwt, $secretKey, array('HS256'));
 
 ## Cache eviction with Redis
 
+Please see in [Comment Model](https://github.com/qinhong2015/comments-api/blob/master/api/app/Model/Comments.php)
+
 - make sure CACHE_DRIVER is set use redis in .env
 - comments collection cache with cache key 'comment'
 - single comment cache with cache key "comment:$commentId"
