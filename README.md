@@ -2,6 +2,29 @@
 
 Demo: click this link [Demo](http://comments.qineddiehong.info).
 
+sample apache2 config used in demo
+
+```
+<VirtualHost *:80>
+    ServerName comments.qineddiehong.info
+    ServerAdmin webmaster@localhost
+    DocumentRoot "/var/www/comments/view/dist"
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory "/var/www/comments/view/dist">
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias "/api" "/var/www/comments/api/public"
+    <Directory "/var/www/comments/api/public">
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
+
 Simple CRUD API demonstration for comment object
 
 Features: [Redis Cache](https://redis.io/), [JWT token authentication](https://jwt.io/)
